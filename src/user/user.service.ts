@@ -117,7 +117,7 @@ export class UserService {
   }
 
   buildUserResponse(user: UserEntity): IUserResponse {
-    const { password, ...userData } = user.toJSON(); // Исключаем password
+    const { password, ...userData } = user.toJSON();
     return {
       user: {
         ...userData,
