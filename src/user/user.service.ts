@@ -14,7 +14,7 @@ export class UserService {
     private userModel: typeof UserEntity,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {    
     const userByLogin = await this.userModel.findOne({
       where: {
         login: createUserDto.login,
@@ -29,8 +29,8 @@ export class UserService {
     }
 
     const newUser = new UserEntity();
-    Object.assign(newUser, createUserDto);
-    return await this.userModel.create(newUser);
+    Object.assign(newUser, createUserDto);    
+    return await newUser.save();
   }
 
   async findAll(): Promise<UserEntity[]> {

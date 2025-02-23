@@ -16,7 +16,7 @@ import { User } from './decorators/user.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { IUserResponse } from './types/userResponse.interface';
 
-@Controller('users')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -28,7 +28,7 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Get()
+  @Get('users')
   findAll() {
     return this.userService.findAll();
   }
