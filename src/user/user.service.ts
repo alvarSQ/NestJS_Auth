@@ -71,32 +71,33 @@ export class UserService {
     return userByLogin;
   }
 
-  // async findAll(): Promise<UserEntity[]> {
-  //   return this.userModel.findAll();
-  // }
+  async updateUser(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
-  // async findOne(id: number): Promise<UserEntity> {
-  //   return this.userModel.findByPk(id);
-  // }
+    // Фильтруем только разрешенные поля
+    const allowedFields: Partial<UpdateUserDto> = {
+      login: updateUserDto.login,
+      tabel: updateUserDto.tabel,
+    };
 
-  // async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-  //   const user = await this.findOne(id);
-  //   if (updateUserDto.password) {
-  //     // Хешируем пароль вручную при обновлении
-  //     updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-  //   }
-  //   await user.update(updateUserDto);
-  //   return user;
-  // }
+    // Обновляем только разрешенные поля
+    Object.assign(user, allowedFields);
+    return await user.save();
+  }
 
-  // async remove(id: number): Promise<void> {
-  //   const user = await this.findOne(id);
-  //   await user.destroy();
-  // }
-
-  // async findByLogin(login: string): Promise<UserEntity> {
-  //   return this.userModel.findOne({ where: { login } });
-  // }
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await user.destroy();
+  }
 
   async findById(id: number): Promise<UserEntity> {
     return this.userModel.findOne({

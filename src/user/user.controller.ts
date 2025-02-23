@@ -43,21 +43,25 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  // @UseGuards(AuthGuard)
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.userService.findOne(+id);
-  // }
+  @Put('user')
+  @UseGuards(AuthGuard)
+  async updateCurrentUser(
+    @User('id') currentUserId: number,
+    @Body('user') updateUserDto: UpdateUserDto,
+  ): Promise<IUserResponse> {
+    const user = await this.userService.updateUser(
+      currentUserId,
+      updateUserDto,
+    );
+    return this.userService.buildUserResponse(user);
+  }
 
-  // @UseGuards(AuthGuard)
-  // @Put(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
-  // }
-
-  // @UseGuards(AuthGuard)
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.userService.remove(+id);
-  // }
+  @UseGuards(AuthGuard)
+  @Delete('user')
+  async deleteCurrentUser(
+    @User('id') currentUserId: number,
+  ): Promise<{ message: string }> {
+    await this.userService.deleteUser(currentUserId);
+    return { message: 'User successfully deleted' };
+  }
 }
