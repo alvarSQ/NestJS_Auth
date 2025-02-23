@@ -1,21 +1,36 @@
-// src/users/users.service.ts
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserEntity } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { sign } from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { IUserResponse } from './types/userResponse.interface';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectModel(UserEntity)
     private userModel: typeof UserEntity,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    // Хеширование происходит в модели через @BeforeCreate
-    return this.userModel.create(createUserDto);
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const userByLogin = await this.userModel.findOne({
+      where: {
+        login: createUserDto.login,
+      },
+    });
+
+    if (userByLogin) {
+      throw new HttpException(
+        'Login are taken',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const newUser = new UserEntity();
+    Object.assign(newUser, createUserDto);
+    return await this.userModel.create(newUser);
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -43,5 +58,26 @@ export class UsersService {
 
   async findByLogin(login: string): Promise<UserEntity> {
     return this.userModel.findOne({ where: { login } });
+  }
+
+  generateJwt(user: UserEntity): string {
+    return sign(
+      {
+        id: user.id,
+        login: user.login,
+        password: user.password,
+      },
+      process.env.JWT_SECRET,
+    );
+  }
+
+  buildUserResponse(user: UserEntity): IUserResponse {
+    const { password, ...userData } = user.toJSON(); // Исключаем password
+    return {
+      user: {
+        ...userData,
+        token: this.generateJwt(user),
+      },
+    };
   }
 }
