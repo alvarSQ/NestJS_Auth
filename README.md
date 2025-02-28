@@ -22,9 +22,7 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Задание 
 Написать Fullstack приложение, которое будет реализовывать авторизацию пользователей в приложении.
@@ -38,7 +36,19 @@
 
 В модели должны быть минимум полей: id, login, tabel, password
 
-
 Нужно заполнить таблицу с пользователями users через seeds - это делается через sequelize.
 
-<!-- [Postman](https://documenter.getpostman.com/view/33046910/2sAYX9oLkP) документация. -->
+[Postman](https://documenter.getpostman.com/view/33046910/2sAYdhJAPB) документация.
+
+## Front
+Использовать стек: Vue3 + TypeScript.
+
+Верстка страниц в соответствии с дизайном в [фигме](https://www.figma.com/design/GenX6JHyNhWu4gFnBQg4Dx/Untitled?node-id=0-1&p=f&t=CQJCQnYVnCrRk2ID-0)
+
+Основная функциональность в работе авторизации:
+
+Нужно реализовать приложение которое будет получать пользователей и автоматизировать их в системе, если tabel, login и password были введены верно.
+
+В зависимости от правильности введенного сообщения - выводить положительное или отрицательное сообщение и авторизовывать пользователя сохраняя в браузере токен авторизации.
+
+[Front](https://github.com/alvarSQ/Vue3_Auth).
